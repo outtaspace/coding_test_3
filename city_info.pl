@@ -12,7 +12,7 @@ use Getopt::Long qw(GetOptions);
 use English qw(-no_match_vars);
 use CityInfo::CommandFactory;
 
-use constant FILENAME => './city_info.txt';
+use constant FILENAME => lib::abs::path('./city_info.txt');
 
 #-- CLI ----------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
