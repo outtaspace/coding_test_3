@@ -26,12 +26,15 @@ if (!%{ $options } || exists $options->{help}) {
 
 #-- open a data file ---------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
-my $filehandle = do {
+my $filehandle;
+{
     my $filename = exists $options->{filename} ? $options->{filename} : FILENAME;
-    IO::File->new($filename, 'r');
-};
 
-croak(sprintf q{Can't open "%s": %s}, $options->{filename}, $OS_ERROR) unless $filehandle;
+    $filehandle = IO::File->new($filename, 'r');
+
+    croak(sprintf q{Can't open "%s": %s}, $filename, $OS_ERROR)
+        unless $filehandle;
+}
 
 #-- instantiate a command ----------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
