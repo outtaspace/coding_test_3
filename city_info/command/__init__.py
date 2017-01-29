@@ -1,10 +1,11 @@
-class Command:
-    def __init__(self, reader, writer):
+from abc import ABCMeta, abstractmethod
+
+
+class Command(metaclass=ABCMeta):
+    def __init__(self, reader: object, writer: object) -> None:
         self.reader = reader
         self.writes = writer
 
-    def execute(self):
-        pass
-
-    def parse_line(self):
+    @abstractmethod
+    def execute(self) -> None:
         pass
