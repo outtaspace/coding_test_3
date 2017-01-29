@@ -1,0 +1,11 @@
+*.pyc
+*.json
+bin
+include
+lib
+local
+__pycache__
+.idea
+.vscode
+migrations
+tags
