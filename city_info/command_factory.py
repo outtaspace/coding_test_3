@@ -5,7 +5,10 @@ class CommandFactory:
     @classmethod
     def resolve_class_name(cls, mode: str) -> str:
         mode_to_class_name = dict(all='All', city='City')
-        return mode_to_class_name[mode]
+        if isinstance(mode, str) and mode in mode_to_class_name:
+            return mode_to_class_name[mode]
+        else:
+            raise InvalidMode
 
     @classmethod
     def resolve_class_location(cls, mode: str) -> str:
@@ -23,3 +26,7 @@ class CommandFactory:
         module = cls.import_module(class_location)
 
         return getattr(module, class_name)(*args, **kwargs)
+
+
+class InvalidMode(Exception):
+    pass

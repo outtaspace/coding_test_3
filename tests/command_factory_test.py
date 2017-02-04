@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from city_info.command_factory import CommandFactory
+from city_info.command_factory import CommandFactory, InvalidMode
 
 
 class TestCommandFactory(unittest.TestCase):
@@ -18,8 +18,10 @@ class TestCommandFactory(unittest.TestCase):
         )
 
     def test_resolving_class_location(self):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(InvalidMode):
             CommandFactory.resolve_class_name(mode='unexpected_mode')
+        with self.assertRaises(InvalidMode):
+            CommandFactory.resolve_class_name(mode=dict())
         self.assertEqual(
             CommandFactory.resolve_class_name(mode='all'),
             'All'
