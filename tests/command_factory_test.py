@@ -3,10 +3,13 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from city_info.command_factory import CommandFactory, InvalidMode
+from city_info.command_factory import CommandFactory, Factory, InvalidMode
 
 
 class TestCommandFactory(unittest.TestCase):
+    def test_abc(self):
+        self.assertTrue(issubclass(CommandFactory, Factory))
+
     def test_resolving_class_name(self):
         self.assertEqual(
             CommandFactory.resolve_class_location(mode='all'),
