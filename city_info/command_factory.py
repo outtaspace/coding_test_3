@@ -3,19 +3,23 @@ import importlib
 
 
 class Factory(metaclass=abc.ABCMeta):
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def resolve_class_name(cls, mode: str) -> str:
         pass
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def resolve_class_location(cls, mode: str) -> str:
         pass
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def import_module(cls, class_location: str) -> object:
         pass
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def create(cls, mode: str, *args: dict, **kwargs: dict) -> object:
         pass
 
