@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 
 from city_info.command_factory import CommandFactory, Factory, InvalidMode
 
@@ -38,7 +38,7 @@ class TestCommandFactory(unittest.TestCase):
     def test_loading_module(self, import_module):
         class_location = 'city_info.command.all'
 
-        return_value = MagicMock()
+        return_value = Mock()
         import_module.return_value = return_value
 
         module = CommandFactory.import_module(class_location)
@@ -54,7 +54,7 @@ class TestCommandFactory(unittest.TestCase):
                 self.reader = reader
                 self.writer = writer
 
-        return_value = MagicMock(All=All)
+        return_value = Mock(All=All)
         import_module.return_value = return_value
 
         instance = CommandFactory.create(
