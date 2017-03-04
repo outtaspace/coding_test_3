@@ -3,19 +3,19 @@ import importlib
 
 
 class Factory(metaclass=abc.ABCMeta):
-    @classmethod
+    @staticmethod
     @abc.abstractmethod
-    def resolve_class_name(cls, mode: str) -> str:
+    def resolve_class_name(mode: str) -> str:
         pass
 
-    @classmethod
+    @staticmethod
     @abc.abstractmethod
-    def resolve_class_location(cls, mode: str) -> str:
+    def resolve_class_location(mode: str) -> str:
         pass
 
-    @classmethod
+    @staticmethod
     @abc.abstractmethod
-    def import_module(cls, class_location: str) -> object:
+    def import_module(class_location: str) -> object:
         pass
 
     @classmethod
@@ -25,20 +25,20 @@ class Factory(metaclass=abc.ABCMeta):
 
 
 class CommandFactory(Factory):
-    @classmethod
-    def resolve_class_name(cls, mode: str) -> str:
+    @staticmethod
+    def resolve_class_name(mode: str) -> str:
         mode_to_class_name = dict(all='All', city='City')
         if isinstance(mode, str) and mode in mode_to_class_name:
             return mode_to_class_name[mode]
         else:
             raise InvalidMode
 
-    @classmethod
-    def resolve_class_location(cls, mode: str) -> str:
+    @staticmethod
+    def resolve_class_location(mode: str) -> str:
         return 'city_info.command.{mode}'.format(mode=mode)
 
-    @classmethod
-    def import_module(cls, class_location: str) -> object:
+    @staticmethod
+    def import_module(class_location: str) -> object:
         return importlib.import_module(class_location)
 
     @classmethod
