@@ -25,8 +25,8 @@ class ICommandIOLayer(metaclass=abc.ABCMeta):
 
 class Command(ICommandIOLayer, metaclass=abc.ABCMeta):
     def __init__(self, reader: object, writer: object) -> None:
-        self._reader = reader
-        self._writer = writer
+        self.__reader = reader
+        self.__writer = writer
 
     @abc.abstractmethod
     def execute(self) -> None:
@@ -34,16 +34,16 @@ class Command(ICommandIOLayer, metaclass=abc.ABCMeta):
 
     @property
     def reader(self) -> object:
-        return self._reader
+        return self.__reader
 
     @reader.setter
     def reader(self, reader):
-        self._reader = reader
+        self.__reader = reader
 
     @property
     def writer(self):
-        return self._writer
+        return self.__writer
 
     @writer.setter
     def writer(self, writer):
-        self._writer = writer
+        self.__writer = writer
