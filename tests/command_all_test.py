@@ -15,7 +15,7 @@ class TestCommandAll(unittest.TestCase):
 
     descriptions = command_data.descriptions
 
-    def testing_abs(self):
+    def testing_abc(self):
         self.assertTrue(issubclass(All, Command))
 
         command = All(reader=Mock(), writer=Mock())
