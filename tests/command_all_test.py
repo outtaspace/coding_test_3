@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import io
 from pprint import pformat
 import unittest
 from unittest.mock import Mock
@@ -27,18 +28,20 @@ class TestCommandAll(unittest.TestCase):
 
         descriptions = [1, 2, 3]
         command._write_summary(descriptions=descriptions)
-        writer.write.assert_called_once_with(pformat(descriptions))
+        writer.write.assert_called_once_with(pformat(descriptions) + '\n')
 
     def testing_build_descriptions(self):
-        command = All(reader=Mock(), writer=Mock())
+        all_raw_lines = io.StringIO(self.all_raw_lines).readlines()
+        descriptions = All._build_descriptions(all_raw_lines=all_raw_lines)
         self.assertEqual(
-            command._build_descriptions(all_raw_lines=self.all_raw_lines),
+            descriptions,
             self.descriptions
         )
 
     def testing_execute(self):
         reader = Mock()
-        reader_attrs = {'readlines.return_value': self.all_raw_lines}
+        all_raw_lines = io.StringIO(self.all_raw_lines).readlines()
+        reader_attrs = {'readlines.return_value': all_raw_lines}
         reader.configure_mock(**reader_attrs)
 
         writer = Mock()
@@ -48,7 +51,7 @@ class TestCommandAll(unittest.TestCase):
 
         reader.readlines.assert_called_once_with()
 
-        writer.write.assert_called_once_with(pformat(self.descriptions))
+        writer.write.assert_called_once_with(pformat(self.descriptions) + '\n')
 
 
 if __name__ == '__main__':
