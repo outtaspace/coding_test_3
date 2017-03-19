@@ -2,7 +2,7 @@ import abc
 import importlib
 
 
-class Factory(metaclass=abc.ABCMeta):
+class Factory(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def resolve_class_name(mode: str) -> str:

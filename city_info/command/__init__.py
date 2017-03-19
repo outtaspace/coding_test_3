@@ -1,7 +1,7 @@
 import abc
 
 
-class ICommandIOLayer(metaclass=abc.ABCMeta):
+class ICommandIOLayer(abc.ABC):
     @property
     @abc.abstractmethod
     def reader(self) -> object:
@@ -23,7 +23,7 @@ class ICommandIOLayer(metaclass=abc.ABCMeta):
         pass
 
 
-class Command(ICommandIOLayer, metaclass=abc.ABCMeta):
+class Command(ICommandIOLayer, abc.ABC):
     def __init__(self, reader: object, writer: object) -> None:
         self.__reader = reader
         self.__writer = writer
