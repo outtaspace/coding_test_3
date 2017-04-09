@@ -1,5 +1,5 @@
+from city_info.city import City as _City
 from city_info.command import Command
-from city_info.command.utils import parse_line
 
 
 class City(Command):
@@ -12,28 +12,11 @@ class City(Command):
         return self.__city
 
     def execute(self) -> None:
-        for line in self.reader.readlines():
-            description = self._build_description(line=line)
-            if description is None:
-                continue
-            if description['city'] == self.city:
-                self._write_summary(description)
+        cities = self._build_cities()
+        for city in cities:
+            if self.city == city.name:
+                self._write_summary(city=city)
                 break
 
-    def _write_summary(self, description: dict) -> None:
-        summary = self._build_summary(description=description)
-        self.writer.write(summary + '\n')
-
-    @staticmethod
-    def _build_summary(description: dict) -> str:
-        summary_template = (
-            'id={id};'
-            ' city={city};'
-            ' country={country};'
-            ' population={population}'
-        )
-        return summary_template.format(**description)
-
-    @staticmethod
-    def _build_description(line: str) -> dict:
-        return parse_line(line)
+    def _write_summary(self, city: _City) -> None:
+        self.writer.write(str(city) + '\n')

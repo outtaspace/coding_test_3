@@ -2,7 +2,7 @@
 
 import io
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from city_info.command import Command
 from city_info.command.city import City
@@ -11,8 +11,7 @@ import tests.command_data as command_data
 
 class TestCommandAll(unittest.TestCase):
     all_raw_lines = command_data.all_raw_lines
-
-    descriptions = command_data.descriptions
+    cities = command_data.cities
 
     def testing_abc(self):
         self.assertTrue(issubclass(City, Command))
@@ -21,55 +20,33 @@ class TestCommandAll(unittest.TestCase):
         self.assertTrue(isinstance(command, Command))
         self.assertTrue(isinstance(command, City))
 
-    def testing_build_summary(self):
-        summary = City._build_summary(self.descriptions[0])
-        self.assertEqual(summary, (
-            'id=1;'
-            ' city=Tokyo;'
-            ' country=Japan;'
-            ' population=32,450,000'
-        ))
-
-    def testing_build_description(self):
-        lines = io.StringIO(self.all_raw_lines)
-        self.assertEqual(
-            City._build_description(line=lines.readline()),
-            None
-        )
-        self.assertEqual(
-            City._build_description(line=lines.readline()),
-            self.descriptions[0]
-        )
-        self.assertEqual(
-            City._build_description(line=lines.readline()),
-            self.descriptions[1]
-        )
-
     def testing_write_summary(self):
         writer = Mock()
-        command = City(reader=Mock(), writer=writer, city='city')
+        command = City(reader=Mock(), writer=writer, city=self.cities[0].name)
 
-        description = self.descriptions[0]
-        command._write_summary(description=description)
+        command._write_summary(city=self.cities[0])
+        writer.write.assert_called_once_with(str(self.cities[0]) + '\n')
 
-        summary = City._build_summary(description=description)
-        writer.write.assert_called_once_with(summary + '\n')
+    def testing_build_cities(self):
+        reader = Mock()
+        all_raw_lines = io.StringIO(self.all_raw_lines).readlines()
+        reader_attrs = {'readlines.return_value': all_raw_lines}
+        reader.configure_mock(**reader_attrs)
 
-    def testing_execute(self):
-        reader = io.StringIO(self.all_raw_lines)
-        writer = Mock()
+        command = City(reader=reader, writer=Mock(), city=self.cities[0].name)
+        cities = command._build_cities()
+        reader.readlines.assert_called_once_with()
+        self.assertEqual(cities, self.cities)
 
-        description = self.descriptions[2]
+    @patch('city_info.command.city.City._write_summary')
+    @patch('city_info.command.city.City._build_cities')
+    def testing_execute(self, _build_cities, _write_summary):
+        _build_cities.return_value = self.cities
 
-        command = City(
-            reader=reader,
-            writer=writer,
-            city=description['city']
-        )
+        command = City(reader=Mock(), writer=Mock(), city=self.cities[0].name)
         self.assertEqual(command.execute(), None)
-
-        summary = City._build_summary(description=description)
-        writer.write.assert_called_once_with(summary + '\n')
+        _build_cities.assert_called_once_with()
+        _write_summary.assert_called_once_with(city=self.cities[0])
 
 
 if __name__ == '__main__':
