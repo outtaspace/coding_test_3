@@ -6,13 +6,10 @@ from city_info.city import City
 
 class CityFactory:
     __validator = Validator(dict(
-        id=dict(type='integer', coerce=int),
-        name=dict(type='string'),
-        country=dict(type='string'),
-        population=dict(
-            type='integer',
-            coerce=lambda p: int(p.replace(',', ''))
-        )
+        id=dict(required=True, type='integer', coerce=int),
+        name=dict(required=True, type='string'),
+        country=dict(required=True, type='string'),
+        population=dict(required=True, type='integer', coerce=int)
     ), allow_unknown=True)
 
     __regex = re.compile("""
@@ -29,31 +26,30 @@ class CityFactory:
     """, flags=re.X)
 
     @classmethod
-    def create(cls, description: dict) -> City:
-        cls.__validator.validate(description)
-        city = cls.__validator.document
-        return City(
-            id=city['id'],
-            name=city['name'],
-            country=city['country'],
-            population=city['population']
-        )
+    def create(cls, **kwargs) -> City:
+        if cls.__validator.validate(kwargs):
+            description = cls.__validator.document
+            return City(**description)
+        else:
+            raise ValidationError(cls.__validator.errors)
 
     @classmethod
     def create_from_string(cls, raw_string: str) -> City:
         description = cls._parse_string(raw_string=raw_string)
-        return cls.create(description=description)
+        return cls.create(**description)
 
     @classmethod
     def _parse_string(cls, raw_string: str) -> dict:
         match = cls.__regex.findall(raw_string)
-        result = None
+        result = {}
         if len(match):
             match = match[0]
-            result = dict(
-                id=match[0],
-                name=match[1],
-                country=match[2],
-                population=match[3]
-            )
+            result['id'] = match[0]
+            result['name'] = match[1]
+            result['country'] = match[2]
+            result['population'] = match[3].replace(',', '')
         return result
+
+
+class ValidationError(Exception):
+    pass

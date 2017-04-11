@@ -1,9 +1,8 @@
 import abc
 from typing import List
 
-from cerberus import DocumentError
 from city_info.city import City
-from city_info.city_factory import CityFactory
+from city_info.city_factory import CityFactory, ValidationError
 
 
 class ICommandIOLayer(abc.ABC):
@@ -40,7 +39,7 @@ class Command(ICommandIOLayer, abc.ABC):
         for line in self.reader.readlines():
             try:
                 city = CityFactory.create_from_string(raw_string=line)
-            except DocumentError:
+            except ValidationError:
                 pass
             else:
                 cities.append(city)
